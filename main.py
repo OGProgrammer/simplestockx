@@ -67,7 +67,7 @@ def discord_hook(product_name, product_url, thumbnail_url, retail, size, last_sa
         "embeds": [
             {
                 "title": product_name,
-                # "description": "Retail ${} USD".format(retail),
+                "description": "Retail ${} USD".format(retail),
                 "url": product_url,
                 "color": 4500277,
                 "timestamp": json_time,

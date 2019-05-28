@@ -26,7 +26,6 @@ class Product:
 
             r = requests.post(url='https://xw7sbct9v6-dsn.algolia.net/1/indexes/products/query/', params=payload, json=json_payload)
             output = r.json()['hits']
-
             self.product_name = output[self.index]['name']
 
             while not self.found_product:
@@ -36,6 +35,7 @@ class Product:
                     self.product_id = output[self.index]['objectID']
                     self.ticker_symbol = output[self.index]['ticker_symbol']
                     self.product_url = 'https://stockx.com/' + output[self.index]['url']
+                    print(self.product_url)
                     self.thumbnail_url = output[self.index]['thumbnail_url']
                     while True:
                         size = str(input("Size for {}? ".format(self.product_name)))
@@ -108,15 +108,18 @@ class Product:
             else:
                 print("Did not find given size for {}".format(self.product_name))
                 return None
-
+            print(self.product_id)
             r = requests.get('https://stockx.com/api/products/{0}/activity?state={1}'.format(self.product_id, 300)) #bids
             order_json = r.json()
 
+            highest_bid = 0
             for order in order_json: # seach thru all and first one is highest bid
                 if order['shoeSize'] == self.product_size:
-                    highest_bid = round(float(order['amount']))
-                    break
-            else:
+                    if order['amount'] > highest_bid or highest_bid == 0:
+                        highest_bid = round(float(order['amount']))
+                    continue
+
+            if highest_bid == 0:
                 print("Did not find given size for {}".format(self.product_name))
                 return None
 
